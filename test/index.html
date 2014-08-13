@@ -22,14 +22,18 @@
 		<script src="vendor/syn.js"></script>
 		<script src="vendor/mocha.js"></script>
 		<script src="vendor/chai.js"></script>
+		<script src="vendor/sinon-chai.js"></script>
+		<script src="vendor/sinon.js"></script>
 		<script src="/testem.js"></script>
 		<script src="../dist/js/standalone/selectize.js"></script>
+		<script src="../src/plugins/infinite_scroll/plugin.js"></script>
 	</head>
     <body>
 		<div id="mocha"></div>
 		<form id="fixture"></form>
 		<script>
     	mocha.setup({ui: 'bdd', ignoreLeaks: true});
+
 		window.expect = chai.expect;
 		window.assert = chai.assert;
 		window.has_focus = function(elem) {
@@ -70,6 +74,7 @@
 		<script src="events_dom.js"></script>
 		<script src="interaction.js"></script>
 		<script src="xss.js"></script>
+		<script src="plugins/infinite_scroll.js"></script>
 		<!-- end tests -->
 		<script>
 		if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
