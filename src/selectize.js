@@ -39,6 +39,7 @@ var Selectize = function($input, settings) {
 		caretPos         : 0,
 		loading          : 0,
 		loadedSearches   : {},
+    updateScore      : false,
 
 		$activeOption    : null,
 		$activeItems     : [],
@@ -723,7 +724,7 @@ $.extend(Selectize.prototype, {
 			if (!self.loading) {
 				$wrapper.removeClass(self.settings.loadingClass);
 			}
-			self.trigger('load', results);
+			self.trigger.apply(self, Array.prototype.concat(['load'], Array.prototype.slice.call(arguments, 0)));
 		}]);
 	},
 
@@ -998,7 +999,7 @@ $.extend(Selectize.prototype, {
 		}
 
 		// perform search
-		if (query !== self.lastQuery) {
+		if (query !== self.lastQuery || self.updateScore) {
 			self.lastQuery = query;
 			result = self.sifter.search(query, $.extend(options, {score: calculateScore}));
 			self.currentResults = result;

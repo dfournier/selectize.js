@@ -8,24 +8,36 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-replace');
+	grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('configure', [
 		'clean:pre',
 		'bower:install',
 	]);
 
-	grunt.registerTask('compile', [
-		'copy:less',
-		'copy:less_plugins',
-		'concat:less_theme_dependencies',
-		'concat:less_plugins',
+  grunt.registerTask('preCompile:style', [
+    'copy:less',
+    'copy:less_plugins',
+    'concat:less_theme_dependencies',
+    'concat:less_plugins',
+    'less:uncompressed',
+    'clean_bootstrap2_css',
+    'replace:css_post'
+  ]);
+
+	grunt.registerTask('preCompile:js', [
 		'concat:js',
-		'less:uncompressed',
-		'clean_bootstrap2_css',
-		'replace',
-		'build_standalone',
-		'uglify',
-		'clean:post',
+		'replace:main',
+		'build_standalone'
+  ]);
+
+  grunt.registerTask('compile', [
+    'preCompile:style',
+    'coffee:all',
+    'preCompile:js',
+    'uglify',
+    'clean:post'
 	]);
 
 	grunt.registerTask('default', [
@@ -214,6 +226,34 @@ module.exports = function(grunt) {
 					'dist/js/standalone/selectize.min.js': ['dist/js/standalone/selectize.js']
 				}
 			}
-		}
+		},
+    coffee: {
+      all: {
+        options: {
+          bare: true
+        },
+        files: [{
+          expand: true,
+          src: ['src/**/*.coffee', 'test/**/*.coffee'],
+          ext: '.js'
+          }]
+      }
+    },
+    watch: {
+      js: {
+        options: {
+          livereload: true
+        },
+        files: ['src/**/*.js', 'test/**/*.js'],
+        tasks: ['preCompile:js']
+      },
+      coffee: {
+        options: {
+          livereload: true
+        },
+        files: ['src/**/*.coffee', 'test/**/*.coffee'],
+        tasks: ['coffee:all']
+      }
+    }
 	});
 };
